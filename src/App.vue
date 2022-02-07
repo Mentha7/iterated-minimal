@@ -26,26 +26,26 @@
 
 		</InstructionScreen>
 
-		<template v-for="(trial, i) of train_pic">
+		<template v-for="(index, i) of train1a">
 			<Screen :key = "i">
 				<Slide> <!-- Display label for 1 second -->
-					{{train_vocab[i]}}
-					<Wait :key="trial.label" :time="1000" @done= "$magpie.nextSlide()" />
+					{{vocab[index]}}
+					<Wait :time="1000" @done= "$magpie.nextSlide()" />
 				</Slide>
 				<Slide> <!-- Display picture and label for 5 seconds -->
-					{{train_vocab[i]}}
+					{{vocab[index]}}
 					<br/>
-					<img :src="trial.pic" />
+					<img :src="pictures[index].pic" />
 					<!-- <TextareaInput :response.sync="$magpie.measurements.input" /> -->
 					<!-- <button @click="$magpie.saveAndNextScreen();">Next</button> -->
 					<Record :data="{
 						trial_type: 'training 1a',
 						trial_number: i+1,
-						expected: train_vocab[i],
-						item: trial.item,
+						expected: vocab[index],
+						item: pictures[index].item,
 					}"/>
-					<Wait :key="trial.label" :time="5000" @done= "$magpie.nextSlide()" />
-<!-- 					<Wait :key="trial.label" :time="5000" @done= "$magpie.saveAndnextScreen()" /> -->
+					<Wait :time="5000" @done= "$magpie.nextSlide()" />
+<!--          <Wait :time="5000" @done= "$magpie.saveAndnextScreen()" /> -->
 				</Slide>
 				<Slide> <!-- Optional manual transition -->
 					<button
@@ -60,26 +60,26 @@
 
 		</InstructionScreen>
 
-		<template v-for="(trial, i) of train_pic">
+		<template v-for="(index, i) of train1b">
 			<Screen :key = "i">
 				<Slide> <!-- Display label for 1 second -->
-					{{train_vocab[i]}}
-					<Wait :key="trial.label" :time="1000" @done= "$magpie.nextSlide()" />
+					{{vocab[index]}}
+					<Wait :time="1000" @done= "$magpie.nextSlide()" />
 				</Slide>
 				<Slide> <!-- Display picture and label for 5 seconds -->
-					{{train_vocab[i]}}
+					{{vocab[index]}}
 					<br/>
-					<img :src="trial.pic" />
+					<img :src="pictures[index].pic" />
 					<!-- <TextareaInput :response.sync="$magpie.measurements.input" /> -->
 					<!-- <button @click="$magpie.saveAndNextScreen();">Next</button> -->
 					<Record :data="{
 						trial_type: 'training 1b',
 						trial_number: i+1,
-						expected: train_vocab[i],
-						item: trial.item,
+						expected: vocab[index],
+						item: pictures[index].item,
 					}"/>
-					<Wait :key="trial.label" :time="5000" @done= "$magpie.nextSlide()" />
-<!-- 					<Wait :key="trial.label" :time="5000" @done= "$magpie.saveAndnextScreen()" /> -->
+					<Wait :time="5000" @done= "$magpie.nextSlide()" />
+<!--          <Wait :time="5000" @done= "$magpie.saveAndnextScreen()" /> -->
 				</Slide>
 				<Slide> <!-- Optional manual transition -->
 					<button
@@ -94,17 +94,17 @@
 
 		</InstructionScreen>
 
-		<template v-for="(trial, i) of test_pic">
+		<template v-for="(index, i) of test1">
 			<Screen :key = "i">
 				<Slide> <!-- Display picture and label for 5 seconds -->
-					<img :src="trial.pic" />
+					<img :src="pictures[index].pic" />
 					<TextareaInput :response.sync="$magpie.measurements.input" />
 					<button @click="$magpie.saveAndNextScreen();">Next</button>
 					<Record :data="{
 						trial_type: 'testing 1',
 						trial_number: i+1,
-						expected: test_vocab[i],
-						item: trial.item,
+						expected: vocab[index],
+						item: pictures[index].item,
 					}"/>
 				</Slide>
 			</Screen>
@@ -112,8 +112,27 @@
 		<!-- Round 2: halved_seen and halved_unseen -->
 
 		<!-- Round 3: seen and unseen -->
+		<InstructionScreen :title="'Final Testing'">
+			When you are ready, click the button to start your final testing for the language.
 
-<!-- 		<PostTestScreen /> -->
+		</InstructionScreen>
+
+		<template v-for="(index, i) of final">
+			<Screen :key = "i">
+				<Slide> <!-- Display picture and label for 5 seconds -->
+					<img :src="pictures[index].pic" />
+					<TextareaInput :response.sync="$magpie.measurements.input" />
+					<button @click="$magpie.saveAndNextScreen();">Next</button>
+					<Record :data="{
+						trial_type: 'final',
+						trial_number: i+1,
+						expected: vocab[index],
+						item: pictures[index].item,
+					}"/>
+				</Slide>
+			</Screen>
+		</template>
+<!--    <PostTestScreen /> -->
 
 		<!-- While developing your experiment, using the DebugResults screen is fine,
 			once you're going live, you can use the <SubmitResults> screen to automatically send your experimental data to the server. -->
@@ -128,129 +147,160 @@ import pictures from '../trials/init.csv';
 import _random from 'lodash/random';
 import _sample from 'lodash/sample';
 import _shuffle from 'lodash/shuffle';
-import _pull from 'lodash/pull';
+import _difference from 'lodash/difference';
 import _slice from 'lodash/slice';
 
 export default {
 	name: 'App',
 	data() {
-		// generate new vocab for each chain
-		console.log(syllables);
-		console.log(vocab_size);
+
 		let vocab = [];
-		for (let i = 0; i < vocab_size; i++){
-			let num_syllables = _random(min_syllables, max_syllables)
-			let word = "";
-			for (let j = 0; j < num_syllables; j++){
-				word += _sample(syllables);
-			}
-			if (vocab.includes(word)) {
-				i--; // duplicates not added to array
-				console.log("created duplicate word");
-			} else {
-				vocab.push(word);
-			}
-		}
-
-		console.log(vocab);
-
-		const seen_vocab = _slice(_shuffle(vocab), num_seen - 1);
-		const seen_pic = _slice(_shuffle(pictures), num_seen - 1);
-
-		const unseen_vocab = _pull(vocab, ...seen_vocab);
-		const unseen_pic = _pull(pictures, ...seen_pic);
-
-		console.log(seen_pic);
-		console.log(seen_vocab);
-		console.log(unseen_pic);
-		console.log(unseen_vocab);
-
-		const train_vocab = _slice(_shuffle(seen_vocab), num_train);
-		const test_vocab = _slice(_shuffle(unseen_vocab), num_test);
-
-		let train_pic = [];
-		let test_pic = [];
-
-		for (const el of train_vocab) {
-			train_pic.push(seen_pic[seen_vocab.indexOf(el)]);
-		}
-
-		for (const el of test_vocab) {
-			test_pic.push(unseen_pic[unseen_vocab.indexOf(el)]);
-		}
-
-		console.log(train_vocab);
-		console.log(train_pic);
-		console.log(test_vocab);
-		console.log(test_pic);
-
+		let seen = [];
+		let unseen = [];
+		let train1a = [];
+		let train1b = [];
+		let test1 = [];
+		let train2a = [];
+		let train2b = [];
+		let test2 = [];
+		let final = [];
 
 		return {
 			pictures,
 			vocab,
-			seen_pic,
-			seen_vocab,
-			unseen_pic,
-			unseen_vocab,
-			train_vocab,
-			test_vocab,
-			train_pic,
-			test_pic,
-			// Expose lodash.method to template above
-			// range: _.range
+			seen,
+			unseen,
+			train1a,
+			train1b,
+			test1,
+			train2a,
+			train2b,
+			test2,
+			final,
 		};
 	},
-	methods: {
-		randomiseData:
-		 function(vocab_array, pic_array){
-		 	let shuffled_vocab = _shuffle(vocab_array);
-		 	let matching_pics = [];
-		 	for (const el of shuffled_vocab) {
-			matching_pics.push(pic_array[vocab_array.indexOf(el)]);
-		}
-		 console.log(shuffled_vocab);
-		 console.log(matching_pics);
 
-		 	return {
-		 		shuffled_vocab,
-		 		matching_pics,
+	created: function(){
+		this.generateVocab();
+		this.splitSeenUnseen();
+		this.prepareRound1();
+		this.prepareRound2();
+		this.prepareRound3();
+	},
+
+	methods: {
+
+		generateVocab:
+		 function(){
+		 	// generate new vocab for each chain
+			console.log(syllables);
+			console.log(vocab_size);
+			for (let i = 0; i < vocab_size; i++){
+				let num_syllables = _random(min_syllables, max_syllables)
+				let word = "";
+				for (let j = 0; j < num_syllables; j++){
+					word += _sample(syllables);
+				}
+				if (this.vocab.includes(word)) {
+					i--; // duplicates not added to array
+					console.log("created duplicate word");
+				} else {
+					this.vocab.push(word);
+				}
+			}
+
+			console.log(this.vocab);
+		 },
+
+		sample_n:
+		 function(n, collection){
+		 	let results = [];
+		 	let len = collection.length - 1;
+		 	for (let i = 0; i < n; i++){
+		 		let index = _random(len)
+		 		if (results.includes(index)) {
+		 			i--;
+		 			console.log("chosen same index");
+		 		} else{
+		 			results.push(index);
+		 		}
 		 	}
+		 	console.log(results);
+		 	return results;
+		 },
+
+		filterAmbiguous:
+		 function(){// set this.vocab to unique, get corresponding indices
+		 	// reset seen and unseen
+		 },
+
+		splitSeenUnseen:
+		 function(){
+		 	this.seen = this.sample_n(num_seen, this.vocab)
+		 	let indices = Array.from(this.pictures, (_, idx) => idx)
+		 	this.unseen = _shuffle(_difference(indices, this.seen))
+		 },
+
+		prepareRound1:
+		 function(){
+		 	this.train1a = _slice(_shuffle(this.seen), num_train)
+		 	this.train1b = _shuffle(this.train1a)
+		 	this.test1 = _slice(_shuffle(this.unseen), num_test)
+		 },
+
+		prepareRound2:
+		 function(){
+		 	this.train2a = _slice(_shuffle(this.seen), num_train)
+		 	this.train2b = _shuffle(this.train2a)
+		 	this.test2 = _slice(_shuffle(this.unseen), num_test)
+		 },
+
+		prepareRound3:
+		 function(){
+		 	this.final = this.randomiseData(pictures)
+		 },
+
+		randomiseData:
+		 function(some_array){
+		 	let indices = Array.from(some_array, (_, idx) => idx)
+		 	console.log(indices)
+		 	return _shuffle(indices)
 		 },
 
 		getPreviousResponse:
 		 function(){
-		 	let generation = this.$magpie.socket.generation;
-		 	console.log(generation);
-		 	if (generation == null){
-		 		return "empty socket";
-		 	}
-		 	if (generation == 1){
-		 		// if first generation in chain, read pairs from initial_pairs, randomise
-		 		// return two/four arrays
-		 		return 0;
-		 	} else{
-		 		return -1;
-		 	}
+			let generation = this.$magpie.socket.generation;
+			console.log(generation);
+			if (generation == null){
+				return "empty socket";
+			}
+			if (generation == 1){
+				// if first generation in chain, read pairs from initial_pairs, randomise
+				// return two/four arrays
+				return 0;
+			} else{
+				return -1;
+			}
 		 }
 		// getPreviousResponse:
 		//  function(){
 
-		//  	var generation = this.$magpie.socket.generation;
+		//    var generation = this.$magpie.socket.generation;
 
-		//  	if (generation == 1){
-		//  		// if first generation in chain, read pairs from initial_pairs, randomise
-		//  		// return two/four arrays
-		//  		return;
-		//  	}
+		//    if (generation == 1){
+		//      // if first generation in chain, read pairs from initial_pairs, randomise
+		//      // return two/four arrays
+		//      return;
+		//    }
 
-		//  	var lastIterationResults = this.$magpie.socket.lastIterationResults;
-		//  	// lastIterationResults will be null before initialisation
-		//  	// if not first generation in chain nor empty socket, read from lastIterationResults
-		//  	// filter ambiguous pairs
-		//  	// move all but one of the ambiguous items to UNSEEN
-		//  	// randomise SEEN and UNSEEN
-		//  	// return two/four arrays
-		//  	return;
+		//    var lastIterationResults = this.$magpie.socket.lastIterationResults;
+		//    // lastIterationResults will be null before initialisation
+		//    // if not first generation in chain nor empty socket, read from lastIterationResults
+		//    // filter ambiguous pairs
+		//    // move all but one of the ambiguous items to UNSEEN
+		//    // randomise SEEN and UNSEEN
+		//    // return two/four arrays
+		//    return;
 		//  }
 	}
 };
