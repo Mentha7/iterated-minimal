@@ -24,6 +24,8 @@
 		<InstructionScreen :title="'Training Round 1'">
 			When you are ready, click the button to start your training.
 
+<!-- 			{{this.getPreviousResponse()}} -->
+
 		</InstructionScreen>
 
 		<template v-for="(index, i) of train1a">
@@ -36,8 +38,6 @@
 					{{vocab[index]}}
 					<br/>
 					<img :src="pictures[index].pic" />
-					<!-- <TextareaInput :response.sync="$magpie.measurements.input" /> -->
-					<!-- <button @click="$magpie.saveAndNextScreen();">Next</button> -->
 					<Record :data="{
 						trial_type: 'training 1a',
 						trial_number: i+1,
@@ -70,8 +70,6 @@
 					{{vocab[index]}}
 					<br/>
 					<img :src="pictures[index].pic" />
-					<!-- <TextareaInput :response.sync="$magpie.measurements.input" /> -->
-					<!-- <button @click="$magpie.saveAndNextScreen();">Next</button> -->
 					<Record :data="{
 						trial_type: 'training 1b',
 						trial_number: i+1,
@@ -96,7 +94,7 @@
 
 		<template v-for="(index, i) of test1">
 			<Screen :key = "i">
-				<Slide> <!-- Display picture and label for 5 seconds -->
+				<Slide>
 					<img :src="pictures[index].pic" />
 					<TextareaInput :response.sync="$magpie.measurements.input" />
 					<button @click="$magpie.saveAndNextScreen();">Next</button>
@@ -110,7 +108,90 @@
 			</Screen>
 		</template>
 		<!-- Round 2: halved_seen and halved_unseen -->
+		<InstructionScreen :title="'Training Round 1'">
+			When you are ready, click the button to start your second round of training.
 
+		</InstructionScreen>
+
+		<template v-for="(index, i) of train2a">
+			<Screen :key = "i">
+				<Slide> <!-- Display label for 1 second -->
+					{{vocab[index]}}
+					<Wait :time="1000" @done= "$magpie.nextSlide()" />
+				</Slide>
+				<Slide> <!-- Display picture and label for 5 seconds -->
+					{{vocab[index]}}
+					<br/>
+					<img :src="pictures[index].pic" />
+					<Record :data="{
+						trial_type: 'training 2a',
+						trial_number: i+1,
+						expected: vocab[index],
+						item: pictures[index].item,
+					}"/>
+					<Wait :time="5000" @done= "$magpie.nextSlide()" />
+<!--          <Wait :time="5000" @done= "$magpie.saveAndnextScreen()" /> -->
+				</Slide>
+				<Slide> <!-- Optional manual transition -->
+					<button
+						v-if="!$magpie.measurements.hasOwnProperty('response')"
+						@click="$magpie.saveAndNextScreen();">Next</button>
+				</Slide>
+			</Screen>
+		</template>
+
+		<InstructionScreen :title="'Training Round 1b'">
+			When you are ready, click the button to start your next training session.
+
+		</InstructionScreen>
+
+		<template v-for="(index, i) of train2b">
+			<Screen :key = "i">
+				<Slide> <!-- Display label for 1 second -->
+					{{vocab[index]}}
+					<Wait :time="1000" @done= "$magpie.nextSlide()" />
+				</Slide>
+				<Slide> <!-- Display picture and label for 5 seconds -->
+					{{vocab[index]}}
+					<br/>
+					<img :src="pictures[index].pic" />
+					<Record :data="{
+						trial_type: 'training 2b',
+						trial_number: i+1,
+						expected: vocab[index],
+						item: pictures[index].item,
+					}"/>
+					<Wait :time="5000" @done= "$magpie.nextSlide()" />
+<!--          <Wait :time="5000" @done= "$magpie.saveAndnextScreen()" /> -->
+				</Slide>
+				<Slide> <!-- Optional manual transition -->
+					<button
+						v-if="!$magpie.measurements.hasOwnProperty('response')"
+						@click="$magpie.saveAndNextScreen();">Next</button>
+				</Slide>
+			</Screen>
+		</template>
+
+		<InstructionScreen :title="'Testing Round 2'">
+			When you are ready, click the button to start your test for training round 1.
+
+		</InstructionScreen>
+
+		<template v-for="(index, i) of test2">
+			<Screen :key = "i">
+				<Slide>
+					<img :src="pictures[index].pic" />
+					<TextareaInput :response.sync="$magpie.measurements.input" />
+					<button @click="$magpie.saveAndNextScreen();">Next</button>
+					<Record :data="{
+						trial_type: 'testing 2',
+						trial_number: i+1,
+						expected: vocab[index],
+						item: pictures[index].item,
+					}"/>
+				</Slide>
+			</Screen>
+		</template>
 		<!-- Round 3: seen and unseen -->
 		<InstructionScreen :title="'Final Testing'">
 			When you are ready, click the button to start your final testing for the language.
@@ -119,7 +200,7 @@
 
 		<template v-for="(index, i) of final">
 			<Screen :key = "i">
-				<Slide> <!-- Display picture and label for 5 seconds -->
+				<Slide>
 					<img :src="pictures[index].pic" />
 					<TextareaInput :response.sync="$magpie.measurements.input" />
 					<button @click="$magpie.saveAndNextScreen();">Next</button>
@@ -136,6 +217,7 @@
 
 		<!-- While developing your experiment, using the DebugResults screen is fine,
 			once you're going live, you can use the <SubmitResults> screen to automatically send your experimental data to the server. -->
+		<!-- <DebugResultsScreen /> -->
 		<DebugResultsScreen />
 	</Experiment>
 </template>
