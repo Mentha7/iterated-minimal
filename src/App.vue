@@ -21,7 +21,7 @@
 		<AwaitIteratedResultScreen :title="'Waiting for previous participant to finish'"></AwaitIteratedResultScreen>
 
 		<!-- Round 1: halved_seen and halved_unseen -->
-		<InstructionScreen :title="'Training Round 1'">
+		<InstructionScreen :title="'Training Round 1a'">
 			When you are ready, click the button to start your training.
 
 <!-- 			{{this.getPreviousResponse()}} -->
@@ -108,7 +108,7 @@
 			</Screen>
 		</template>
 		<!-- Round 2: halved_seen and halved_unseen -->
-		<InstructionScreen :title="'Training Round 1'">
+		<InstructionScreen :title="'Training Round 2a'">
 			When you are ready, click the button to start your second round of training.
 
 		</InstructionScreen>
@@ -140,7 +140,7 @@
 			</Screen>
 		</template>
 
-		<InstructionScreen :title="'Training Round 1b'">
+		<InstructionScreen :title="'Training Round 2b'">
 			When you are ready, click the button to start your next training session.
 
 		</InstructionScreen>
