@@ -1,16 +1,10 @@
 # iterated-minimal
 
-This is a sample experiment using magpie.
+test experiment link on Netlify: https://test-experiment-blackfooted.netlify.app
 
-First, set up the project with `npm install`
-
-To run the project locally, run `npm run serve`
-
-To build the project for deployment (e.g. to Netlify), run `npm run build`
-
-If you are hosting this repository on github, the project will automatically be built and deployed to the gh-pages branch, so you only have to enable Github Pages in your repository settings to publish your project.
-
-For more information, see the [manual](https://magpie-mnual.netlify.app/).
-
-To automatically fix coding style and format the code (linting) run `npm run lint` and `npm run lint:style`
-
+## To-Do
+- implement getPreviousResponse
+  - retrieve data from server (chain, generation)
+  - retrieve data from previous generation (item, input)
+  - do filtering (make sure this.seen is unique by moving ambiguous items' indices to this.unseen)
+  - generate all data needed for the experiment again (replace this.vocab, refer to pic by 'item' instead of index)
