@@ -24,7 +24,7 @@
 		<InstructionScreen :title="'Training Round 1a'">
 			When you are ready, click the button to start your training.
 
-<!-- 			{{this.getPreviousResponse()}} -->
+			{{this.getPreviousResponse()}}
 
 		</InstructionScreen>
 
@@ -231,6 +231,7 @@ import _sample from 'lodash/sample';
 import _shuffle from 'lodash/shuffle';
 import _difference from 'lodash/difference';
 import _slice from 'lodash/slice';
+import _filter from 'lodash/filter';
 
 export default {
 	name: 'App',
@@ -357,33 +358,21 @@ export default {
 				return "empty socket";
 			}
 			if (generation == 1){
-				// if first generation in chain, read pairs from initial_pairs, randomise
-				// return two/four arrays
+				// do nothing in particular
 				return 0;
 			} else{
+				// retrieve data from previous iteration
+				let lastIterationResults = this.$magpie.socket.lastIterationResults;
+				console.log(lastIterationResults)
+				let filteredData = _filter(lastIterationResults, ['trial_type', 'final'])
+				console.log(filteredData)
+				console.log(filteredData['item'])
+				console.log(filteredData['input'])
+				// filterAmbiguous
+				//
 				return -1;
 			}
 		 }
-		// getPreviousResponse:
-		//  function(){
-
-		//    var generation = this.$magpie.socket.generation;
-
-		//    if (generation == 1){
-		//      // if first generation in chain, read pairs from initial_pairs, randomise
-		//      // return two/four arrays
-		//      return;
-		//    }
-
-		//    var lastIterationResults = this.$magpie.socket.lastIterationResults;
-		//    // lastIterationResults will be null before initialisation
-		//    // if not first generation in chain nor empty socket, read from lastIterationResults
-		//    // filter ambiguous pairs
-		//    // move all but one of the ambiguous items to UNSEEN
-		//    // randomise SEEN and UNSEEN
-		//    // return two/four arrays
-		//    return;
-		//  }
 	}
 };
 
