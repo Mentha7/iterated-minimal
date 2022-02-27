@@ -23,8 +23,10 @@
 		<!-- Round 1: halved_seen and halved_unseen -->
 		<InstructionScreen :title="'Training Round 1a'">
 			When you are ready, click the button to start your training.
-
-			{{this.getPreviousResponse()}}
+			<p> Chain: {{$magpie.socket.chain}} </p>
+			<p> Generation: {{$magpie.socket.generation}} </p>
+			<p> Last iteration results: {{$magpie.socket.lastIterationResults}} </p>
+			<p>{{getPreviousResponse()}}</p>
 
 		</InstructionScreen>
 
@@ -237,6 +239,7 @@ export default {
 	name: 'App',
 	data() {
 
+		let pics = [];
 		let vocab = [];
 		let seen = [];
 		let unseen = [];
@@ -250,6 +253,7 @@ export default {
 
 		return {
 			pictures,
+			pics,
 			vocab,
 			seen,
 			unseen,
@@ -264,6 +268,7 @@ export default {
 	},
 
 	created: function(){
+		this.getPictures();
 		this.generateVocab();
 		this.splitSeenUnseen();
 		this.prepareRound1();
@@ -273,9 +278,14 @@ export default {
 
 	methods: {
 
+		getPictures:
+		 function(){
+			this.pics = pictures;
+		 },
+
 		generateVocab:
 		 function(){
-		 	// generate new vocab for each chain
+			// generate new vocab for each chain
 			console.log(syllables);
 			console.log(vocab_size);
 			for (let i = 0; i < vocab_size; i++){
@@ -295,59 +305,59 @@ export default {
 			console.log(this.vocab);
 		 },
 
-		sample_n:
+		sample_n: // samples n items from collection
 		 function(n, collection){
-		 	let results = [];
-		 	let len = collection.length - 1;
-		 	for (let i = 0; i < n; i++){
-		 		let index = _random(len)
-		 		if (results.includes(index)) {
-		 			i--;
-		 			console.log("chosen same index");
-		 		} else{
-		 			results.push(index);
-		 		}
-		 	}
-		 	console.log(results);
-		 	return results;
+			let results = [];
+			let len = collection.length - 1;
+			for (let i = 0; i < n; i++){
+				let index = _random(len)
+				if (results.includes(index)) {
+					i--;
+					console.log("chosen same index");
+				} else{
+					results.push(index);
+				}
+			}
+			console.log(results);
+			return results;
 		 },
 
 		filterAmbiguous:
 		 function(){// set this.vocab to unique, get corresponding indices
-		 	// reset seen and unseen
+			// reset seen and unseen
 		 },
 
 		splitSeenUnseen:
 		 function(){
-		 	this.seen = this.sample_n(num_seen, this.vocab)
-		 	let indices = Array.from(this.pictures, (_, idx) => idx)
-		 	this.unseen = _shuffle(_difference(indices, this.seen))
+			this.seen = this.sample_n(num_seen, this.vocab)
+			let indices = Array.from(this.pictures, (_, idx) => idx)
+			this.unseen = _shuffle(_difference(indices, this.seen))
 		 },
 
 		prepareRound1:
 		 function(){
-		 	this.train1a = _slice(_shuffle(this.seen), num_train)
-		 	this.train1b = _shuffle(this.train1a)
-		 	this.test1 = _slice(_shuffle(this.unseen), num_test)
+			this.train1a = _slice(_shuffle(this.seen), num_train)
+			this.train1b = _shuffle(this.train1a)
+			this.test1 = _slice(_shuffle(this.unseen), num_test)
 		 },
 
 		prepareRound2:
 		 function(){
-		 	this.train2a = _slice(_shuffle(this.seen), num_train)
-		 	this.train2b = _shuffle(this.train2a)
-		 	this.test2 = _slice(_shuffle(this.unseen), num_test)
+			this.train2a = _slice(_shuffle(this.seen), num_train)
+			this.train2b = _shuffle(this.train2a)
+			this.test2 = _slice(_shuffle(this.unseen), num_test)
 		 },
 
 		prepareRound3:
 		 function(){
-		 	this.final = this.randomiseData(pictures)
+			this.final = this.randomiseData(pictures)
 		 },
 
 		randomiseData:
 		 function(some_array){
-		 	let indices = Array.from(some_array, (_, idx) => idx)
-		 	console.log(indices)
-		 	return _shuffle(indices)
+			let indices = Array.from(some_array, (_, idx) => idx)
+			console.log(indices)
+			return _shuffle(indices)
 		 },
 
 		getPreviousResponse:
@@ -358,17 +368,22 @@ export default {
 				return "empty socket";
 			}
 			if (generation == 1){
-				// do nothing in particular
-				return 0;
+				// do nothing in particular (experiment is ready)
+				return 0; // for testing
 			} else{
 				// retrieve data from previous iteration
 				let lastIterationResults = this.$magpie.socket.lastIterationResults;
 				console.log(lastIterationResults)
+				// only data from the final round is relevant
 				let filteredData = _filter(lastIterationResults, ['trial_type', 'final'])
 				console.log(filteredData)
-				console.log(filteredData['item'])
-				console.log(filteredData['input'])
-				// filterAmbiguous
+				// console.log(filteredData.map(datapoint => datapoint.item))
+				// console.log(filteredData.map(datapoint => datapoint.input))
+
+				// replace pics and vocab with previous results
+				this.pics= filteredData.map(datapoint => datapoint.item)
+				this.vocab = filteredData.map(datapoint => datapoint.input)
+				// filterAmbiguous (easy to implement once the previous step is done)
 				//
 				return -1;
 			}
