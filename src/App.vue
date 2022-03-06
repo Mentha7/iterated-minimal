@@ -14,20 +14,20 @@
       In this experiment, you will learn a few new words of a novel language. The whole experiment consists of three rounds of vocabulary learning. A single learning round is composed of two training sessions and one testing session.
       <br>
       <br>
-      In training sessions, you'll first see the word you're supposed to learn, followed by a <b>pictorial representation</b> of it with no additional explanations, like the image displayed below:
+      In training sessions, you'll first see the word you're supposed to learn, followed by a <b>pictorial representation</b> of it with no additional explanations, like the image shown below:
       <br>
       <img :src="pics[18].pic" />
       <br>
       You have <b>5 seconds</b> to learn each word-picture pair. When time runs out, the visual cues will disappear and you may move on to the next word when you're ready.
       <br>
       <br>
-      In the testing sessions, only pictures (like the one above) will be displayed on the screen. You need to recall words (or invent one when necessary) associated with them and type in your answer.
+      In the testing sessions, only pictures (like the one above) will be displayed on the screen. You need to recall words (or invent some when necessary) associated with those pictures and type in your answer.
       <br>
       <br>
-      In short, your task is to learn a few words with the aid of visual representations of their meaning (and nothing else) and then demonstrate your learning result in testing phases.
+      In short, your task is to learn a few words with the aid of visual representations of their meanings (and nothing else) and then demonstrate your learning result in testing phases.
       <br>
       <br>
-      The experiment will take approximately <b>20 minutes</b> to go through. We encourage you to work through it in one sitting with full concentration and avoid external distractions as much as possible. However, you can rest reassured that you'll not be judged by your performance. Just take it easy and have fun :-)
+      The experiment will take approximately <b>20 minutes</b> to go through. We encourage you to work through it in one sitting with full concentration and avoid external distractions as much as possible. However, you can rest assured that you'll not be judged by your performance. Just take it easy and have fun :-)
       <br>
       <br>
       If you're prepared, click the button below to begin the experiment.
