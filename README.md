@@ -1,6 +1,8 @@
 # iterated-minimal
 
-test experiment link on Netlify: https://test-experiment-blackfooted.netlify.app
+[outdated] test experiment link on Netlify: https://test-experiment-blackfooted.netlify.app
+
+experiment link is distributed privately
 
 ## To-Do
 - Testing with bad behaviors (no answers at all, very few word types)
